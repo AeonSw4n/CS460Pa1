@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="title">
+        <h1>Search Comments</h1>
+    </div>
+    <form id="commentForm" method="post" enctype="multipart/form-data" action="/commentsearch">
+        <label for="comment">Comment</label><br/>
+        <input id="comment" type="text" name="comment" required="true"/><br/>
+        <input type="submit" value="Search" />
+    </form>
+    {% if users %}
+        <ul>
+            {% for user in users %}
+                <li onClick="window.location.href='/user?id={{ user[2] }}'" class="user-{{ user[2] }}">
+                    {{user[0]}} {{user[1]}} ({{ user[3] }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{#    {% if photos %}#}
+{#        {% for i in range(0, len) %}#}
+{#            <p>Author: <a onClick="window.location.href='/user?id={{ authors[i][0] }}'">{{ authors[i][1][0][0] }} {{ authors[i][1][0][1] }}</a></p>#}
+{#            <p>Title: {{photos[i][2]}}</p>#}
+{#            <img onClick="window.location.href='/photo?id={{ photos[i][1] }}'" class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photos[i][0]).decode("ascii") }}'/></br></br><br/>#}
+{#        {% endfor %}#}
+{##}
+{#    {% endif %}#}
+    <br/>
+    <button onClick="window.location.href='/'">Back</button>
+{% endblock %}

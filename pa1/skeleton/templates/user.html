@@ -1,0 +1,37 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Menu</h2>
+        <ul>
+            <li><a href='/album?id={{ data[0][5] }}'>Albums</a></li>
+            <li><a href='/'>Home</a></li>
+        </ul>
+    <h2>Profile</h2>
+    {% if data %}
+        <p>{{ data[0][0] }} {{ data[0][1] }}</p>
+        <p>Date of Birth: {{ data[0][2] }} </p>
+        <p>Town: {{ data[0][3] }} </p>
+        <p>Gender: {{ data[0][4] }} </p>
+    {% endif %}
+    {% if user %}
+        {% if user.is_authenticated %}
+            {% if isFriends %}
+                <form method="post" enctype="multipart/form-data" action="/user">
+                    <input type="text" name="type" require="true" value="1" hidden />
+                    <input id="userEmail" type="text" name="user1" required="true" value="{{ user.id }}" hidden />
+                    <input id="user2" type="text" name="user2" required="true" value="{{ data[0][5] }}" hidden />
+                    <input type="submit" value="Unfriend" />
+                </form>
+            {% else %}
+                <form method="post" enctype="multipart/form-data" action="/user">
+                    <input type="text" name="type" require="true" value="2" hidden />
+                    <input id="userEmail" type="text" name="user1" required="true" value="{{ user.id }}" hidden />
+                    <input id="user2" type="text" name="user2" required="true" value="{{ data[0][5] }}" hidden />
+                    <input type="submit" value="Add Friend" />
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

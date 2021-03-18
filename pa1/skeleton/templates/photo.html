@@ -1,0 +1,59 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if photos %}
+        {% for photo in photos %}
+            <p>Author: <a onClick="window.location.href='/user?id={{ author[0] }}'">{{ author[1][0][0] }} {{ author[1][0][1] }}</a></p>
+            <p>Title: {{photo[2]}}</p><br/>
+            <img class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photo[0]).decode("ascii") }}'/></br></br>
+{#            Here a fix will be needed #}
+            <p>Tags: {% for tag in tags %} {{ tag[0][1] }} {% endfor %}</p>
+            <p>Likes: {{ likes }}</p>
+{#            up to here #}
+            {% if user %}
+                {% if user.is_authenticated %}
+                    {% if isLiked %}
+                        <form id="like" method="post" enctype="multipart/form-data" action="/photo">
+                            <input type="text" name="type" require="true" value="3" hidden />
+                            <input type="text" name="photoId" require="true" value="{{ photo[1] }}" hidden />
+                            <input type="submit" value="Unlike" />
+                        </form>
+                    {% else %}
+                        <form id="like" method="post" enctype="multipart/form-data" action="/photo">
+                            <input type="text" name="type" require="true" value="2" hidden />
+                            <input type="text" name="photoId" require="true" value="{{ photo[1] }}" hidden />
+                            <input type="submit" value="Like" />
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            <br/><br/>
+{#            Disable commnets with multiple #}
+            Comments:
+            {% if comments %}
+                <ul>
+                    {% for comment in comments %}
+                        <li>
+                            <a onClick="window.location.href='/user?id={{ comment[0][1] }}'">{{ comment[1][0][0] }} {{ comment[1][0][1] }}</a>: {{ comment[0][3] }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+    {% if user %}
+        {% if user.is_authenticated %}
+            <p>Leave a comment</p>
+            <form id="addComment" method="post" enctype="multipart/form-data" action="/photo">
+                <input type="text" name="type" require="true" value="1" hidden />
+                <input type="text" name="photoId" require="true" value="{{ photos[0][1] }}" hidden />
+                <input id="comment" type="text" name="comment" required='true' /><br/>
+                <input type="submit" value="Post" />
+            </form>
+            <br/><br/>
+        {% endif %}
+    {% endif %}
+    <button onClick="window.location.href='/'">Home</button>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Menu</h2>
+    <ul>
+        <li><a href='/logout'>Logout</a></li>
+        <li><a href='/album?id={{ data[0][5] }}'>Albums</a></li>
+        <li><a href='/'>Home</a></li>
+    </ul>
+
+    <h2>Profile</h2>
+    {% if data %}
+        <p>{{ data[0][0] }} {{ data[0][1] }}</p>
+        <p>Date of Birth: {{ data[0][2] }} </p>
+        <p>Town: {{ data[0][3] }} </p>
+        <p>Gender: {{ data[0][4] }} </p>
+    {% endif %}
+
+    <h2>Friends</h2>
+    {% if friend_list %}
+        <ul>
+            {% for user in friend_list %}
+                <li onClick="window.location.href='/user?id={{ user[0][2] }}'" class="user-{{ user[0][2] }}">
+                    {{user[0][0]}} {{user[0][1]}}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if recommendations %}
+        <h3>Friend Recommendations</h3>
+        {% for user in recommendations %}
+            <li onClick="window.location.href='/user?id={{ user[2] }}'" class="user-{{ user[2] }}">
+                    {{user[0]}} {{user[1]}} ({{ user[3] }})
+            </li>
+        {% endfor %}
+    {% endif %}
+
+    {% if photos %}
+        <h3>Photos You May Like</h3>
+        {% for photo in photos %}
+            <div class="li-photo li-photo-{{ photo[0][3] }}">
+                <p>Title: {{photo[0][2]}}</p>
+                <img onClick="window.location.href='/photo?id={{ photo[0][1] }}'" class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photo[0][0]).decode("ascii") }}'/>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

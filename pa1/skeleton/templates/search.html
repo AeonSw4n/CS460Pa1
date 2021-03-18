@@ -1,0 +1,26 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="title">
+        <h1>Search for users</h1>
+    </div>
+    {% if users %}
+        <ul>
+            {% for user in users %}
+                <li onClick="window.location.href='/user?id={{ user[2] }}'" class="user-{{ user[2] }}">
+                    {{user[0]}} {{user[1]}}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form id="searchForm" method="post" enctype="multipart/form-data" action="/search">
+        <label for="firstName">First Name</label><br/>
+        <input id="firstName" type="text" name="firstName"/><br/>
+        <label for="lastName">Last Name</label><br/>
+        <input id="lastName" type="text" name="lastName"/><br/>
+        <input type="submit" value="Search" />
+    </form>
+    <br/>
+    <button onClick="window.location.href='/'">Back</button>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if photos %}
+        {% for i in range(0, len) %}
+            <p>Author: <a onClick="window.location.href='/user?id={{ authors[i][0] }}'">{{ authors[i][1][0][0] }} {{ authors[i][1][0][1] }}</a></p>
+            <p>Title: {{photos[i][2]}}</p>
+            <img onClick="window.location.href='/photo?id={{ photos[i][1] }}'" class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photos[i][0]).decode("ascii") }}'/></br></br><br/>
+        {% endfor %}
+
+    {% endif %}
+    <button onClick="window.location.href='/'">Home</button>
+{% endblock %}

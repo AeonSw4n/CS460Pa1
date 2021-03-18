@@ -1,0 +1,23 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="title">
+        <h1>Search Images by Tags</h1>
+    </div>
+    <form id="searchForm" method="post" enctype="multipart/form-data" action="/tagsearch">
+        <label for="tag">Tag</label><br/>
+        <input id="tag" type="text" name="tag" required="true"/><br/>
+        <input type="submit" value="Search" />
+    </form>
+    {% if photos %}
+        {% for i in range(0, len) %}
+{#            <p>Author: <a onClick="window.location.href='/user?id={{ authors[i][0] }}'">{{ authors[i][1][0][0] }} {{ authors[i][1][0][1] }}</a></p>#}
+            <p>Title: {{photos[i][2]}}</p>
+            <img onClick="window.location.href='/photo?id={{ photos[i][1] }}'" class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photos[i][0]).decode("ascii") }}'/></br></br><br/>
+        {% endfor %}
+
+    {% endif %}
+    <br/>
+    <button onClick="window.location.href='/'">Back</button>
+{% endblock %}

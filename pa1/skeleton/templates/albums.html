@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+        <div id="myImages" style="display: none">
+            <h3>{{ author[0][0][0] }} {{ author[0][0][1] }} Albums</h3>
+            {% if photos %}
+                <h3>Images</h3>
+                {% for photo in photos %}
+                    <div class="li-photo li-photo-{{ photo[3] }}" style="display: none">
+                        <p>Title: {{photo[2]}}</p>
+                        <img onClick="window.location.href='/photo?id={{ photo[1] }}'" class="thumbnail" src='data:image/jpg;base64, {{ base64.b64encode(photo[0]).decode("ascii") }}'/>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if user %}
+                {% if user.is_authenticated %}
+                    {% if author[1] == myid %}
+                        <h3>Upload a photo</h3>
+                        <form method="post" enctype="multipart/form-data" action="/upload">
+                            <input id="uploadTags" type="text" name="uploadTags" require="true" hidden />
+                            <label for="photo">Select photo:</label>
+                            <input id="albumId" type="text" name="albumId" required="true" hidden />
+                            <input type="file" name="photo" required='true' /><br />
+                            <label for="caption">Please caption:</label>
+                            <input type="text" name="caption" required='true' /><br />
+                            <input type="submit" value="Upload" />
+                        </form>
+                        {% if tags %}
+                            <h3>Selected Tags</h3>
+                            <p id="tags"></p>
+                            <h3>Select Tags</h3>
+                            {% for tag in tags %}
+                                <a onClick="selectTag({{ tag[0] }})" class="tag-{{ tag[0] }}">{{ tag[1] }}</a>
+                            {% endfor %}
+                        {% endif %}
+                        <h3>Add Tag</h3>
+                        <form method="post" enctype="multipart/form-data" action="/album">
+                            <input type="text" name="type" require="true" value="2" hidden />
+                            <label for="tagName">Tag name</label>
+                            <input type="text" name="tagName" required="true" /></br>
+                            <input type="submit" value="Add" />
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            <br/><br/>
+            <button onClick="back()">Back</button>
+        </div>
+        <div id="myAlbums">
+            <h3>{{ author[0][0][0] }} {{ author[0][0][1] }} Albums</h3>
+            {% if albums %}
+                <ul>
+                {% for i in range(0, len) %}
+                    <li id="li-{{ albums[i][0] }}" onClick="selectAlbum({{ albums[i][0] }})">{{ albums[i][1] }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% if message %}
+                <p>Album {{ message }} created!</p>
+            {% endif %}
+            {% if tags %}
+                <h3>Filter by Tag</h3>
+                {% for tag in tags %}
+                    <a href="/photos?user={{ author[1] }}&tag={{ tag[0] }}">{{ tag[1] }}</a>
+                {% endfor %}
+            {% endif %}
+            {% if user %}
+                {% if user.is_authenticated %}
+                    {% if author[1] == myid %}
+                        <h3>Create Album</h3>
+                        <button onClick="createAlbum()">New Album</button><br/>
+                        <form id="createAlbum" style="display: none;" method="post" enctype="multipart/form-data" action="/album">
+                            <input type="text" name="type" require="true" value="1" hidden />
+                            <label for="albumName">What's your album called:</label><br/>
+                            <input id="albumName" type="text" name="albumName" required='true' /><br/>
+                            <input type="submit" value="Upload" />
+                        </form>
+                        <br/><br/>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            {% if user %}
+                {% if user.is_authenticated %}
+                    <button onClick="window.location.href='/profile'">Profile</button>
+                {% endif %}
+            {% endif %}
+            <button onClick="window.location.href='/'">Home</button>
+        </div>
+        <script>
+            let selectedAlbum = "";
+            $("#uploadTags").value= "";
+            selectedTags = [];
+            function selectTag(tag){
+                $("#tags")[0].innerText = $("#tags")[0].innerText +" "+ $(".tag-"+tag)[0].innerText;
+                $(".tag-"+tag)[0].style.display="none";
+                selectedTags.push(tag.toString());
+                $("#uploadTags")[0].value = selectedTags.toString();
+            }
+
+            function selectAlbum(id){
+                console.log(id);
+                selectedAlbum = id;
+                $("#uploadTags")[0].value = "";
+                {% if user %}
+                    {% if user.is_authenticated %}
+                        {% if author[1] == myid %}
+                        $("#createAlbum")[0].style.display="none";
+                        $("#albumId")[0].value=id;
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                $("#myAlbums")[0].style.display="none";
+                $("#myImages")[0].style.display="block";
+                $(".li-photo-"+id).toArray().forEach((v)=>{v.style.display="block"});
+            }
+
+            function back(){
+                $("#uploadTags")[0].value = "";
+                {% if user %}
+                    {% if user.is_authenticated %}
+                        {% if author[1] == myid %}
+                            $("#createAlbum")[0].style.display="none";
+                            {% endif %}
+                    {% endif %}
+                {% endif %}
+                $("#myAlbums")[0].style.display="block";
+                $("#myImages")[0].style.display="none";
+                $(".li-photo").toArray().forEach((v)=>{v.style.display="none"});
+            }
+
+            function createAlbum(){
+                {% if user %}
+                    {% if user.is_authenticated %}
+                        {% if author[1] == myid %}
+                            $("#createAlbum")[0].style.display="block";
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            }
+        </script>
+{% endblock %}
